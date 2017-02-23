@@ -38,14 +38,14 @@ function writeCobolContent(indent, level, name, value, length, editField) {
 	} else {
 		output += repeat(' ', indent);
 		output += ((level < 10) ? "0" : "") + level;
-		output += "  " + rightPad(name, ' ', 19) + " ";
+		output += "  " + rightPad(name, ' ', 11) + " ";
 		if (!editField) {
 			output += "VALUE " + rightPad(value, ' ', 17);
 			output += " PIC X(" + ((length < 10) ? "0" : "") + length + ")";
 		} else {
 			output += repeat(' ', 23);
 			output += " PIC ";
-			if (editField.length > 11) output += "\n" + repeat(' ', 52 - (editField.length > 15 ? editField.length - 15 : 0));
+			if (editField.length > 12) output += "\n" + repeat(' ', 52 - (editField.length > 16 ? editField.length - 16 : 0));
 			output += editField;
 		}
 		output += '.\n';
@@ -129,7 +129,7 @@ function makeReport(input, width, startRowNum) {
 				if (row[j].isField) {
 					cobol += writeCobolContent(4, 5, 'RL-' + (outRowNum < 10 ? "0" : "") + outRowNum, '', 0, row[j].val);
 				} else {
-					cobol += writeCobolContent(4, 5, 'RL-' + (outRowNum < 10 ? "0" : "") + outRowNum, row[j].val);
+					cobol += writeCobolContent(4, 5, 'FILLER', row[j].val);
 				}
 			}
 			test += "\n";
