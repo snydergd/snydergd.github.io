@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Generate Cobol Report</title>
+		<script type="text/javascript" src="main.js"></script>
+		<style type="text/css">
+			pre {
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Generate Cobol Report Headers</h2>
+		<p>Enter your text below.</p>
+		<div>
+			<textarea id="spec">Very special report
+---
+Transaction
+Date
+-
+Year
+-
+Premium
+Amount
+-
+Total
+Premium
+Expense
+---
+--------
+---
+Field
+1
+>z,zzz,zz9.99-
+-
+Field 2
+</textarea>
+		</div>
+		<div>
+			Width: <input type="number" id="width" value="80">
+			<button id="doStuff">Make Report Headers</button>
+		</div>
+		<div>
+			<pre id="preview"></pre>
+		</div>
+		<div><pre id="output" contentEditable>
+		</pre></div>
+	</body>
+</html>
