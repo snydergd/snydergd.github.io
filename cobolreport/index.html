@@ -12,9 +12,9 @@
 	</head>
 	<body>
 		<h1>Generate Cobol Report Headers</h2>
-		<p>Enter your text below.</p>
+		<p>Enter spec below (example is provided), and parameters, then press "Make Report Headers" to produce cobol report header code with preview.</p>
 		<div>
-			<textarea id="spec">Very special report
+			<pre id="spec" contentEditable>Very special report
 ---
 Transaction
 Date
@@ -35,10 +35,11 @@ Field
 >z,zzz,zz9.99-
 -
 Field 2
-</textarea>
+</pre>
 		</div>
 		<div>
-			Width: <input type="number" id="width" value="80">
+			Width: <input type="number" id="width" value="133">
+			Starting Line Number: <input type="number" id="startingLine" value="0">
 			<button id="doStuff">Make Report Headers</button>
 		</div>
 		<div>

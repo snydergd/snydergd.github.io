@@ -45,7 +45,7 @@ function writeCobolContent(indent, level, name, value, length, editField) {
 		} else {
 			output += repeat(' ', 23);
 			output += " PIC ";
-			if (editField.length > 11) output += "\n" + repeat(' ', 52);
+			if (editField.length > 11) output += "\n" + repeat(' ', 52 - (editField.length > 15 ? editField.length - 15 : 0));
 			output += editField;
 		}
 		output += '.\n';
@@ -53,15 +53,14 @@ function writeCobolContent(indent, level, name, value, length, editField) {
 	return output;
 }
 
-function makeReport(input, width) {
+function makeReport(input, width, startRowNum) {
 	var row, col, widths, spacings;
 	var content, baseSpace, extraSpace, contentWidth;
 	var space;
 	var test = "";
 	var cobol = "";
 	var i, j, k, l;
-	var outputChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	var outRowNum = 0;
+	var outRowNum = startRowNum;
 	input = input.split('\n---\n');
 	for (i = 0; i < input.length; i++) {
 		row = input[i].split('\n-\n');
@@ -118,7 +117,7 @@ function makeReport(input, width) {
 		}
 		
 		for (k = 0; k < content.length; k++) {
-			cobol += "03  rh-0" + outputChars[outRowNum] + ".\n";
+			cobol += "03  rh-" + (outRowNum < 10 ? "0" : "") + outRowNum + ".\n";
 			row = content[content.length-1-k];
 			for (j = 0; j < row.length; j++) {
 				for (l = 0; l < row[j].preSpace; l++) test += ' ';
@@ -128,9 +127,9 @@ function makeReport(input, width) {
 				
 				test += row[j].val;
 				if (row[j].isField) {
-					cobol += writeCobolContent(4, 5, 'RL-0' + outputChars[outRowNum], '', 0, row[j].val);
+					cobol += writeCobolContent(4, 5, 'RL-' + (outRowNum < 10 ? "0" : "") + outRowNum, '', 0, row[j].val);
 				} else {
-					cobol += writeCobolContent(4, 5, 'RL-0' + outputChars[outRowNum], row[j].val);
+					cobol += writeCobolContent(4, 5, 'RL-' + (outRowNum < 10 ? "0" : "") + outRowNum, row[j].val);
 				}
 			}
 			test += "\n";
@@ -144,10 +143,10 @@ function makeReport(input, width) {
 }
 
 window.addEventListener("load", function () {
-	textAreaAdjust(document.getElementById("spec"));
 	document.getElementById("doStuff").addEventListener("click", function() {
 		makeReport(
-			document.getElementById("spec").value,
-			document.getElementById("width").value);
+			document.getElementById("spec").innerText,
+			document.getElementById("width").value,
+			parseInt(document.getElementById("startingLine").value));
 	});
 });
