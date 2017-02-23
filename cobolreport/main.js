@@ -24,16 +24,16 @@ function writeCobolContent(indent, level, name, value, length, editField) {
 			words = value.match(/\w+\W*/g);
 			for (var i = 0; i < words.length; i++) {
 				if (tmp.length + words[i].length > 15) {
-					output += writeCobolContent(indent, level, name, '"' + tmp + '"', tmp.length);
+					output += writeCobolContent(indent, level, name, "'" + tmp + "'", tmp.length);
 					tmp = "";
 				}
 				tmp += words[i];
 				while (tmp.length > 15) {
-					output += writeCobolContent(indent, level, name, '"' + tmp.substr(0, 15) + '"', 15);
+					output += writeCobolContent(indent, level, name, "'" + tmp.substr(0, 15) + "'", 15);
 					tmp = tmp.substr(15);
 				}
 			}
-			if (tmp.length) output += writeCobolContent(indent, level, name, '"' + tmp + '"', tmp.length);
+			if (tmp.length) output += writeCobolContent(indent, level, name, "'" + tmp + "'", tmp.length);
 		}
 	} else {
 		output += repeat(' ', indent);
@@ -45,7 +45,7 @@ function writeCobolContent(indent, level, name, value, length, editField) {
 		} else {
 			output += repeat(' ', 23);
 			output += " PIC ";
-			if (editField.length > 12) output += "\n" + repeat(' ', 52 - (editField.length > 16 ? editField.length - 16 : 0));
+			if (editField.length > 12) output += "\n" + repeat(' ', 44 - (editField.length > 16 ? editField.length - 16 : 0));
 			output += editField;
 		}
 		output += '.\n';
