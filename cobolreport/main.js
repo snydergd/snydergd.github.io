@@ -100,7 +100,13 @@ function makeReport(input, width, startRowNum) {
 			row = content[content.length-1-k];
 			space = 0;
 			if (widths.length == 1) {
-				row[0].preSpace = Math.floor((width-row[0].val.length)/2);
+				if (row.length) {
+					if (width > 0) {
+						row[0].preSpace = Math.floor((width-row[0].val.length)/2);
+					} else {
+						row[0].preSpace = 0;
+					}
+				}
 			} else {
 				for (j = 0; j < widths.length; j++) {
 					space += spacings[j];
@@ -117,8 +123,9 @@ function makeReport(input, width, startRowNum) {
 		}
 		
 		for (k = 0; k < content.length; k++) {
-			cobol += "03  rh-" + (outRowNum < 10 ? "0" : "") + outRowNum + ".\n";
 			row = content[content.length-1-k];
+			if (row.length == 0) continue;
+			cobol += "03  rh-" + (outRowNum < 10 ? "0" : "") + outRowNum + ".\n";
 			for (j = 0; j < row.length; j++) {
 				for (l = 0; l < row[j].preSpace; l++) test += ' ';
 				if (row[j].preSpace > 0) {
