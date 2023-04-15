@@ -1,0 +1,6 @@
+- name: Home
+  link: /
+- name: gFidget
+  link: /gfidget
+- name: Test
+  link: /test

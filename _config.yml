@@ -1,0 +1,12 @@
+
+$schema: https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/jekyll.json
+
+title: George's Page
+description: A playground on the web
+
+exclude:
+  - "gfidget/source/node_modules"
+
+#remote_theme: pages-themes/architect@v0.2.0
+#plugins:
+#- jekyll-remote-theme
