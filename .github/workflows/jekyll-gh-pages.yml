@@ -35,7 +35,9 @@ jobs:
         with:
           node-version: '18'
       - run: npm ci
+        working-directory: gfidget/source
       - run: npm run build --if-present
+        working-directory: gfidget/source
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
