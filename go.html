@@ -32,7 +32,11 @@
 
     <div id="qrcode" class="qr"></div>
     <div id="qrcode-canvas" class="qr"></div>
+    <a id="baseUrl"></div>
     <script>
+      var baseUrlEl = document.getElementById("baseUrl");
+      baseUrlEl.href = window.location.href.split("#")[0] + "#";
+      baseUrlEl.innerText = baseUrlEl.href;
       if (window.location.hash) {
         var hash = window.location.hash.substr(1);
         var el = document.getElementById("link");
