@@ -15,6 +15,9 @@
           -ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
 
       }
+      .qr {
+        margin: 1em;
+      }
     </style>
   </head>
   <body>
@@ -27,7 +30,8 @@
       <a href="#" id="link" style="display:hidden">Link</a>
     </p>
 
-    <div id="qrcode"></div>
+    <div id="qrcode" class="qr"></div>
+    <div id="qrcode-canvas" class="qr"></div>
     <script>
       if (window.location.hash) {
         var hash = window.location.hash.substr(1);
@@ -36,9 +40,12 @@
         el.innerText = hash;
         el.style.display="auto";
 
-        var qr = new QRCode(document.getElementById("qrcode"), {
+        var qr = new QRCode("qrcode", {
           text: hash,
           useSVG: true,
+        });
+        var qrCanvas = new QRCode("qrcode-canvas", {
+          text: hash,
         });
       }
     </script>
