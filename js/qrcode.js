@@ -559,14 +559,15 @@ var QRCode;
 			el = document.getElementById(el);
 		}
 
+    var MyDrawing = Drawing;
 		if (this._htOption.useSVG) {
-			Drawing = svgDrawer;
+			MyDrawing = svgDrawer;
 		}
 		
 		this._android = _getAndroid();
 		this._el = el;
 		this._oQRCode = null;
-		this._oDrawing = new Drawing(this._el, this._htOption);
+		this._oDrawing = new MyDrawing(this._el, this._htOption);
 		
 		if (this._htOption.text) {
 			this.makeCode(this._htOption.text);	
