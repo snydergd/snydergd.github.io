@@ -2,16 +2,22 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <script>
-      alert("here");
-      if (window.location.hash) {
-        var hash = window.location.hash.substr(1);
-        window.location.href = hash;
-      }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </head>
   <body>
     <h3>Redirect Page</h3>
-    <a href="javascript:window.location.href='https://snydergd.gitHub.io/go#'+window.location.href">redirect</a>
+    <a href="javascript:window.location.href='https://snydergd.gitHub.io/go#'+window.location.href">redirect bookmarklet</a>
+    <a href="#" id="link" style="display:hidden">Link</a>
+    <div id="qrcode"></div>
+    <script>
+      if (window.location.hash) {
+        var hash = window.location.hash.substr(1);
+        var el = document.getElementById("link");
+        el.href = hash;
+        el.style.display="auto";
+
+        var qr = new QRCode(document.getElementById("qrcode"), hash);
+      }
+    </script>
   </body>
-</html>
+</html
