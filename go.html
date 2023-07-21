@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <script>
       alert("here");
+      if (window.location.hash) {
+        var hash = window.location.hash.substr(1);
+        window.location.href = hash;
+      }
     </script>
   </head>
   <body>
     <h3>Redirect Page</h3>
+    <a href="javascript:window.location.href='https://snydergd.gitHub.io/go#'+window.location.href">redirect</a>
   </body>
 </html>
