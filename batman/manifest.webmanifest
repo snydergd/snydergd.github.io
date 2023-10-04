@@ -1,0 +1,15 @@
+{
+    "background_color": "purple",
+    "description": "Bat signal control",
+    "display": "fullscreen",
+    "icons": [
+      {
+        "src": "icon.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ],
+    "name": "BatSignal",
+    "short_name": "BatSignal",
+    "start_url": "/batman/index.html"
+  }
