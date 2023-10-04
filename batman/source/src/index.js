@@ -19,7 +19,7 @@ const App = () => {
     const [color, setColor] = useState(COLOR_OFF);
     const [client, setClient] = useState(null);
     useEffect(() => {
-        const client = new Paho.Client("mqtt-dashboard.com", 8884, "/mqtt", "asdfkhwoiefhsdlkhow");
+        const client = new Paho.Client("mqtt-dashboard.com", 8884, "/mqtt", "asdfkhwoiefhsdlkhow" + Math.random());
         client.onConnectionLost = response => {
             if (response.errorCode !== 0) {
                 console.log("Connection lost: " + response.errorMessage);
@@ -47,12 +47,18 @@ const App = () => {
         return () => setColor(color);
     }
     return <>
-        <button onClick={colorSet(COLOR_OFF)}>Off</button>
-        <button onClick={colorSet(COLOR_WHITE)}>White</button>
-        <button onClick={colorSet(COLOR_RED)}>Red</button>
-        <button onClick={colorSet(COLOR_BLUE)}>Blue</button>
-        <button onClick={colorSet(COLOR_PURPLE)}>Purple</button>
-        <span>Color: {COLOR_NAMES[color]}</span>
+        <div className="d-grid gap-2 container">
+            <h2>Signal Batman!</h2>
+            <p>
+                Set the color.
+            </p>
+            <button onClick={colorSet(COLOR_OFF)} className="btn btn-secondary btn-block">Off</button>
+            <button onClick={colorSet(COLOR_WHITE)} className="btn" style={{backgroundColor: "white"}}>White</button>
+            <button onClick={colorSet(COLOR_RED)} className="btn" style={{backgroundColor: "red", color: "white"}}>Red</button>
+            <button onClick={colorSet(COLOR_BLUE)} className="btn" style={{backgroundColor: "blue", color: "white"}}>Blue</button>
+            <button onClick={colorSet(COLOR_PURPLE)} className="btn" style={{backgroundColor: "purple", color: "white"}}>Purple</button>
+            <span>Current color: {COLOR_NAMES[color]}</span>
+        </div>
     </>
 };
 
