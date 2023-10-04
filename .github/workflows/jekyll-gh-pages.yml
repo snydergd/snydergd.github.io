@@ -36,6 +36,8 @@ jobs:
           node-version: '18'
       - run: npm ci
         working-directory: gfidget/source
+      - run: npm ci
+        working-directory: batman/source
       - run: npm run build --if-present
         working-directory: gfidget/source
       - name: Build with Jekyll
