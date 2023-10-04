@@ -34,12 +34,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+
+      # fidget
       - run: npm ci
         working-directory: gfidget/source
+      - run: npm run build --if-present
+        working-directory: gfidget/source
+
+      # batman
       - run: npm ci
         working-directory: batman/source
       - run: npm run build --if-present
-        working-directory: gfidget/source
+        working-directory: batman/source
+
+      # Clean up that node.js stuff
+      - run: rm -rf batman/source/node_modules gfidget/source/node_modules
+
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
