@@ -6,6 +6,7 @@ description: A playground on the web
 
 exclude:
   - "gfidget/source/node_modules"
+  - "code-learn/source/node_modules"
 
 #remote_theme: pages-themes/architect@v0.2.0
 #plugins:
