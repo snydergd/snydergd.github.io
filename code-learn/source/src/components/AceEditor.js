@@ -1,9 +1,10 @@
 import React, {useEffect, useRef} from "react";
 
-export const AceEditor = (/** @type {AceEditorProps} */{value = "", onChange = ()=>{}, ...otherAttributes}) => {
+export const AceEditor = ({value = "", onChange = value=>{}, ...otherAttributes}) => {
     const editorRef = useRef(null);
 
     function createEditor() {
+        // @ts-ignore
         const editor = ace.edit(editorRef.current);
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/javascript");

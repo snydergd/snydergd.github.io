@@ -1,17 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import routes from '../routes';
+import { Variables } from './sectionmaps/Variables';
 
 export const Map = () => {
     return (
         <div>
-            <h1>Map</h1>
+            <Variables />
             <ul>
-                <li>
-                    <Link to="/challenge1">Challenge 1</Link>
-                </li>
-                <li>
-                    <Link to="/challenge2">Challenge 2</Link>
-                </li>
+                {routes.filter(x => x.isChallenge).map(route => (
+                    <li key={route.path}>
+                        <Link to={route.path}>{route.title}</Link>
+                    </li>
+                ))}
             </ul>
         </div>
     );

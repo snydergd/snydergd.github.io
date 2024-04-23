@@ -1,14 +1,14 @@
-import React, {useEffect, useMemo} from "react";
+import React from "react";
 import AceEditor from "../AceEditor";
 import { Button } from "react-bootstrap";
 import useConfetti from "../../effects/Confetti";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const Challenge1Monkey = () => {
     const answer = 4;
     const [success, setSuccess] = React.useState(false);
     const [value, setValue] = React.useState("x = 0");
-    const [pendingValue, setPendingValue] = React.useState();
+    const [pendingValue, setPendingValue] = React.useState(value);
     const [bananaPos, setBananaPos] = React.useState(answer);
     const [x, setX] = React.useState(0);
     const navigate = useNavigate();
