@@ -20,7 +20,7 @@ module.exports = (env) => {
             ],
         },
         output: {
-            publicPath: "/source/dist/",
+            publicPath: env.WEBPACK_SERVE ? "/source/dist/" : "./dist/",
         },
     };
 
