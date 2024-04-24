@@ -7,13 +7,6 @@ export const Map = () => {
     return (
         <div>
             <Variables />
-            <ul>
-                {routes.filter(x => x.isChallenge).map(route => (
-                    <li key={route.path}>
-                        <Link to={route.path}>{route.title}</Link>
-                    </li>
-                ))}
-            </ul>
         </div>
     );
 };
