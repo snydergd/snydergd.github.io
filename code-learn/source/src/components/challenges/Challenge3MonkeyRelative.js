@@ -40,10 +40,15 @@ export const Challenge2MonkeyRelative = () => {
         <>
             <p>Move the monkey to the bananas!</p>
             <svg style={{display: "block"}} viewBox="0 0 80 20" className="col-sm-12 col-lg-6">
-                <line x1={(bananaPos-offset)*10} y1={12} x2={bananaPos*10} y2={12} stroke="white" strokeWidth="1"/>
-                <text x={(bananaPos-offset/2)*10} y={18} fontSize="5" fill="white">{offset}</text>
+            <line x1="0" y1="10" x2="100" y2="10" stroke="white" strokeWidth="1"/>
+                {[...Array(11).keys()].map((i) => (<>
+                     <line x1={(i+answer%1) * 10} y1="10" x2={(i+answer%1) * 10} y2="15" stroke="white" strokeWidth="1"/>
+                 </>))
+                }
 
-                <text x={(bananaPos-offset)*10} y={8} fontSize="5" fill="white">a</text>
+                {[...Array(offset+1).keys()].map((i) => (<>
+                    <text x={(bananaPos-offset+i)*10} y={20} fontSize="3" fill="white">a{i ? `+${i}` : false}</text>
+                </>))}
                 <image href="./images/bananas.png" width="10" height="10" x={bananaPos*10} y={0}/>
                 <image href="./images/monkey.png" width="10" height="10" x={x*10} y={0}/>
             </svg>
