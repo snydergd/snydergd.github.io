@@ -4,6 +4,7 @@ import Map from "./components/Map";
 const Challenge1Monkey = React.lazy(() => import("./components/challenges/Challenge1Monkey"));
 const Challenge2MonkeyClimb = React.lazy(() => import("./components/challenges/Challenge2MonkeyClimb"));
 const Challenge3MonkeyRelative = React.lazy(() => import("./components/challenges/Challenge3MonkeyRelative"));
+const Challenge4MonkeyCart = React.lazy(() => import("./components/challenges/Challenge4MonkeyCart"));
 
 export const routes = [
     {
@@ -30,6 +31,13 @@ export const routes = [
         path: "/challenge3",
         element: <Challenge3MonkeyRelative />,
         title: "Monkey Relative",
+        isChallenge: true,
+        section: "variables",
+    },
+    {
+        path: "/challenge4",
+        element: <Challenge4MonkeyCart />,
+        title: "Monkey Cart",
         isChallenge: true,
         section: "variables",
     },

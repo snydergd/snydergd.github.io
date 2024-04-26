@@ -49,6 +49,21 @@ function catapault() {
 
     var catapult = Bodies.rectangle(400, 520, 320, 20, { collisionFilter: { group: group } });
     const ball = Bodies.circle(560, 100, 50, { density: 0.005, render: {fillStyle: 'green'} });
+    const gear = Bodies.fromVertices(200, 120, [Matter.Vertices.scale(Matter.Svg.pathToVertices(Array.prototype.slice.call(document.querySelectorAll("#gearpath"))[0],30), 0.4, 0.4)], {
+        render: {
+            fillStyle: "yellow",
+            strokeStyle: "black",
+            lineWidth: 1
+        },
+    }, true);
+    const gear2 = Bodies.fromVertices(385, 120, [Matter.Vertices.scale(Matter.Svg.pathToVertices(Array.prototype.slice.call(document.querySelectorAll("#gearpath"))[0],30), 0.4, 0.4)], {
+        render: {
+            fillStyle: "orange",
+            strokeStyle: "black",
+            lineWidth: 1
+        },
+        angle: Math.PI/32,
+    }, true);
     Composite.add(world, [
         stack,
         catapult,
@@ -63,7 +78,24 @@ function catapault() {
             bodyA: catapult, 
             pointB: Vector.clone(catapult.position),
             stiffness: 1,
-            length: 0
+            length: 0,
+            render: { visible: false },
+        }),
+        gear,
+        Constraint.create({ 
+            bodyA: gear, 
+            pointB: Vector.clone(gear.position),
+            stiffness: 1,
+            length: 0,
+            render: { visible: false },
+        }),
+        gear2,
+        Constraint.create({ 
+            bodyA: gear2, 
+            pointB: Vector.clone(gear2.position),
+            stiffness: 1,
+            length: 0,
+            render: { visible: false },
         })
     ]);
 
@@ -96,7 +128,7 @@ function catapault() {
         runner: runner,
         render: render,
         canvas: render.canvas,
-        objects: [stack, catapult, ball],
+        objects: [stack, catapult, ball, gear, gear2],
         stop: function() {
             Matter.Render.stop(render);
             Matter.Runner.stop(runner);
@@ -123,6 +155,8 @@ export const Variables = () => {
         Matter.Composite.allBodies(physics.objects[0]).map(body => body.render.visible = partsCompleted[0]);
         physics.objects[1].render.visible = partsCompleted[1];
         physics.objects[2].render.visible = partsCompleted[2];
+        physics.objects[3].render.visible = partsCompleted[3];
+        physics.objects[4].render.visible = partsCompleted[3];
         if (sectionProgress >= 100) {
             console.log("run", sectionProgress)
             Matter.Runner.run(physics.runner, physics.engine);
