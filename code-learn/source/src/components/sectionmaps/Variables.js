@@ -29,6 +29,7 @@ function catapault() {
         options: {
             background: "transparent",
             wireframeBackground: "transparent",
+            wireframes: false,
             width: 800,
             height: 600,
         }
@@ -47,7 +48,7 @@ function catapault() {
     });
 
     var catapult = Bodies.rectangle(400, 520, 320, 20, { collisionFilter: { group: group } });
-    const ball = Bodies.circle(560, 100, 50, { density: 0.005 });
+    const ball = Bodies.circle(560, 100, 50, { density: 0.005, render: {fillStyle: 'green'} });
     Composite.add(world, [
         stack,
         catapult,
@@ -105,7 +106,9 @@ function catapault() {
 
 export const Variables = () => {
     const canvasContainer = useRef(null);
-    const [physics,] = useState(catapault());
+    const [physics,] = useState(() => catapault());
+    const partsCompleted = progress.getSectionPartsCompleted("variables");
+    progress.useProgress();
 
     useEffect(() => {
         var rect = canvasContainer.current.getBoundingClientRect();
@@ -129,12 +132,12 @@ export const Variables = () => {
         }
     }, [sectionProgress])
 
-    const partsCompleted = {};
     return (
         <SectionMap
             title="Variables"
             icon="box"
             style={{ position: "relative" }}
+            sectionName="variables"
         >
             <div
                 style={{
@@ -146,23 +149,6 @@ export const Variables = () => {
                 }}
                 ref={canvasContainer}
             />
-
-            <div style={{ position: "relative" }}>
-                {routes
-                    .filter((x) => x.isChallenge && x.section === "variables")
-                    .map((route, i) => {
-                        partsCompleted[i] = progress.isComplete(route.path);
-                        return (
-                            <div key={route.path}>
-                                <Link to={route.path}>
-                                    {route.title}{" "}
-                                    {progress.isComplete(route.path) &&
-                                        <i className="fa-solid fa-circle-check" style={{color: "green"}} />}
-                                </Link>
-                            </div>
-                        );
-                    })}
-            </div>
         </SectionMap>
     );
 };

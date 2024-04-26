@@ -9,13 +9,9 @@ import progress from "../utils/progress";
 const router = createHashRouter(routes);
 
 export const App = () => {
-    const [currentProgress, setCurrentProgress] = useState(progress.getProgress());
-    useEffect(() => {
-        progress.onChange(() => {
-            console.log("Changed")
-            setCurrentProgress(progress.getProgress());
-        });
-    }, [progress]);
+    progress.useProgress();
+    const currentProgress = progress.getProgress();
+
     return (
         <div
             id="wrapper"

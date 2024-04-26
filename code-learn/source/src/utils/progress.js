@@ -1,5 +1,6 @@
 import sections from "../sections";
 import routes from "../routes";
+import React from "react";
 
 const progressKey = "codelearn-progress";
 
@@ -44,7 +45,7 @@ const self = {
         }
         progress.completedChallenges[path] = true;
         self.saveProgress(progress);
-        self.changeCallbacks.forEach(cb => cb());
+        this._indicateChanged();
     },
     isComplete(path) {
         const progress = self.loadProgress();
@@ -58,13 +59,38 @@ const self = {
         });
         return completedSectionChallenges.length === allSectionChallenges.length;
     },
+    getSectionPartsCompleted(sectionName) {
+        const allSectionChallenges = routes.filter(x => x.isChallenge && x.section === sectionName);
+        const progress = self.loadProgress();
+        const result = {};
+        allSectionChallenges.filter(x => progress.completedChallenges && progress.completedChallenges[x.path]).forEach((_,i) => {result[i] = true});
+        return result;
+    },
+    useProgress() {
+        const [progress, setProgress] = React.useState(self.getProgress());
+        React.useEffect(() => {
+            self.nextChangePromise().then(() => {
+                setProgress(self.getProgress());
+            });
+        });
+        return progress;
+    },
     changeCallbacks: [],
-    onChange(callback) {
-        self.changeCallbacks.push(callback);
+    _nextChangePromise: null,
+    _indicateChanged(stuff) {},
+    nextChangePromise() {
+        const setPromise = () => {
+            self._nextChangePromise = new Promise(resolve => { self._indicateChanged = () => {setPromise(); resolve()}; });
+        };
+        if (!self._nextChangePromise) {
+            setPromise();
+        }
+        return self._nextChangePromise;
     },
     clear() {
         localStorage.removeItem(progressKey);
-        self.changeCallbacks.forEach(cb => cb());
+        console.log("change clear")
+        self._indicateChanged();
     },
 };
 window.challengeProgress = self;

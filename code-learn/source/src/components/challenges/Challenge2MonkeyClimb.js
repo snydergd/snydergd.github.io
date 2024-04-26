@@ -2,7 +2,8 @@ import React, {useEffect, useMemo} from "react";
 import AceEditor from "../AceEditor";
 import { Button } from "react-bootstrap";
 import useConfetti from "../../effects/Confetti";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import progress from "../../utils/progress";
 
 export const Challenge1Monkey = () => {
     const answer = {x: 4, y: 6};
@@ -13,6 +14,7 @@ export const Challenge1Monkey = () => {
     const [x, setX] = React.useState(0);
     const [y, setY] = React.useState(0);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useConfetti({success});
 
@@ -40,7 +42,7 @@ export const Challenge1Monkey = () => {
 
     return (
         <>
-            <p>Move the monkey to the bananas!</p>
+            <p>Move the monkey to the bananas<span onClick={() => progress.markComplete(location.pathname)}>!</span></p>
             <svg style={{display: "block"}} viewBox="-10 -10 130 120" className="col-sm-12 col-lg-6">
                 {/* scale for "x"  with markings from 0 to 10 */}
                 <line x1="0" y1="0" x2="100" y2="0" stroke="white" strokeWidth="1"/>
