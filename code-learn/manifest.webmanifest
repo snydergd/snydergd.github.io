@@ -1,6 +1,6 @@
 {
-    "background_color": "purple",
-    "description": "gFidget Fidget/Vibration test",
+    "background_color": "blue",
+    "description": "CodeLearn - Kid learning environment aimed at real code",
     "display": "fullscreen",
     "icons": [
       {
@@ -9,7 +9,7 @@
         "type": "image/png"
       }
     ],
-    "name": "gFidget",
-    "short_name": "gFidget",
-    "start_url": "/gfidget/index.html"
+    "name": "CodeLearn",
+    "short_name": "CodeLearn",
+    "start_url": "/code-learn/"
   }
