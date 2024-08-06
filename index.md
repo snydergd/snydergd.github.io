@@ -2,6 +2,8 @@
 layout: default
 ---
 
-This is the [GitHub Pages](https://help.github.com/pages/) page of George Snyder.  As you see, it is not much.  Mostly I just wanted to try putting <i>something</i> here.
+<img class="float-start me-5 rounded" style="max-width: 24%; vertical-align: top; clear:none" src="images/me2.jpg" />
 
-Really though, just testing playing with github pages/actions/Jekyll at this point.
+A small space of George Snyder for hosting content on the web. Check out the top or bottom menus to find the content.
+
+Site generated/hosted with [GitHub Pages](https://help.github.com/pages/) and [Jekyll](https://jekyllrb.com/).

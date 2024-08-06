@@ -7,7 +7,14 @@ description: A playground on the web
 exclude:
   - "gfidget/source/node_modules"
   - "code-learn/source/node_modules"
+  - "flowit/source/node_modules"
 
+defaults:
+  - scope:
+      path: "blog/*"
+    values:
+      layout: blog
 #remote_theme: pages-themes/architect@v0.2.0
 #plugins:
 #- jekyll-remote-theme
+

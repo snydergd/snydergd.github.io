@@ -1,0 +1,14 @@
+---
+layout: base
+---
+
+{% if page.title %}
+<h2>{{page.title}}</h2>
+{% endif %}
+{% if page.date %}
+<div class="mb-3">
+    {{ page.date | date_to_string: "ordinal", "US" }}
+</div>
+{% endif %}
+
+{{ content }}

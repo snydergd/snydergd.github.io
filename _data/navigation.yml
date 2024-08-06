@@ -1,6 +1,17 @@
 - name: Home
   link: /
+  types: ['bottom']
+
+- name: Blog
+  link: /blog
+  types: ['bottom', 'top']
+- types: ['top']
+  name: Projects
+  link: /projects
+
 - name: gFidget
   link: /gfidget
-- name: Test
+  types: ['bottom']
+- name: Test Page
   link: /test
+  types: ['bottom']
