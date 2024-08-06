@@ -71,7 +71,7 @@ effects of the object fade and disappoint the subject.
 2. By shifting focus from your own wellbeing, you become more resilliant to hardships in your life.  The Bible
 actually has a nice description of this effect:
 
-    >But let patience have her perfect work, that ye may be perfect and entire, wanting nothing. - James 1:4-8
+    >But let patience have her perfect work, that ye may be perfect and entire, wanting nothing. - James 1:4
 
 3. If you believe in a deity and religion, then love/devotion to that deity will usually bring you rewards after
 death.
