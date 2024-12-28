@@ -4,6 +4,7 @@ layout: default
 
 Some small coding/learning projects that I have here include:
 
+- [Chess Board position saver](/chess) -- Allows you to view and make a move to a chess game, then copy this as a link with an image of the board.  This allows for easy play in chats/email/etc.
 - Fidget/vibration test page: [gFidget](/gfidget/)
 - [COBOL report header generator](cobolreport)
 - [Beginning of a code learning tool/game for kids](/code-learn/)

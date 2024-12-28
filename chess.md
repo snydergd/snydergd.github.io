@@ -1,9 +1,11 @@
 ---
 layout: default
-title: Chess game
+title: Chess Board Position
 ---
 
 Here you can link to a specific chess position and make a move to create a new link.
+
+Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [chessboard.js](https://chessboardjs.com/docs.html)
 
 <div id="root">Javascript is loading...</div>
 
