@@ -114,6 +114,7 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
         const [message, setMessage] = useState('');
         const [editText, setEditText] = useState(null);
         const [moveView, setMoveView] = useState(null);
+        const checkDrag = useRef(false);
         const changeFen = (fen) => {
             setFen(fen);
             onFenChange(fen);
@@ -124,6 +125,15 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
             chess.load_pgn(pgn);
             changeFen(chess.fen());
         }, [pgn]);
+        useEffect(() => {
+            checkDrag.current = () => {
+                if (moveView !== null) {
+                    setMessage("Can't drag while previewing old moves.  Move to latest with the arrow buttons first.");
+                    return false;
+                }
+                return true;
+            };
+        }, [moveView, setMessage]);
 
         useEffect(() => {
             if (!boardRef.current || !chess) return;
@@ -131,6 +141,11 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
                 pieceTheme: '/images/chess/{piece}.png',
                 position: chess.fen(),
                 draggable: true,
+                onDragStart() {
+                    if (checkDrag.current) {
+                        return checkDrag.current();
+                    }
+                },
                 onDrop(oldLocation, newLocation) {
                     const move = chess.move({from: oldLocation, to: newLocation});
                     if (!move) return;
