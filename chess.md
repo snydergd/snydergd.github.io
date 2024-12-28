@@ -193,13 +193,13 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
         return <>
             <h3>{color}'s turn</h3>
             <div className="row d-flex position-relative">
-                {message && <div className="alert alert-info">{message}</div>}
+                {message && <div className="alert alert-info" onClick={() => setMessage('')}>{message}</div>}
                 <div ref={boardRef} className={['chessboard']} className="col-6"></div>
                 <div className="col-6">
                     <div>
                         <button type="button" className="btn" onClick={() => setMoveView(Math.max(0,moveView === null ? chess.history().length - 1 : moveView-1))}>{"<"}</button>
                         <button type="button" className="btn" onClick={() => {
-                            if (chess.history().length-1 === moveView) {
+                            if (chess.history().length-1 <= moveView) {
                                 setMoveView(null);
                             } else if (moveView !== null) {
                                 setMoveView(moveView+1);
