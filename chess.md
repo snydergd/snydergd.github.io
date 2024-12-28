@@ -128,7 +128,7 @@ Here you can link to a specific chess position and make a move to create a new l
         useEffect(() => {
             if (!boardRef.current || !chess) return;
             const board = new Chessboard(boardRef.current, {
-                pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+                pieceTheme: '/images/chess/{piece}.png',
                 position: chess.fen(),
                 draggable: true,
                 onDrop(oldLocation, newLocation) {
