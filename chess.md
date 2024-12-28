@@ -113,6 +113,7 @@ Here you can link to a specific chess position and make a move to create a new l
         });
         const [chessBoardDataUrl, setChessBoardDataUrl] = useState(null);
         const [fen, setFen] = useState(chess.fen());
+        const [message, setMessage] = useState('');
         const changeFen = (fen) => {
             setFen(fen);
             onFenChange(fen);
@@ -150,13 +151,22 @@ Here you can link to a specific chess position and make a move to create a new l
             chessBoard.position(fen);
             setChessBoardDataUrl(drawChessBoard(chessBoard.position()));
         }, [fen, chessBoard])
+        useEffect(() => {
+            if (message) {
+                setTimeout(() => setMessage(''), 3000);
+            }
+        }, [message, setMessage])
 
         const color = chess.turn() === 'w' ? 'White' : 'Black';
         return <>
             <h3>{color}'s turn</h3>
+            {message && <div className="alert alert-info">{message}</div>}
             <div ref={boardRef} className={['chessboard']}></div>
             <pre>{pgn}</pre >
-            {chessBoardDataUrl && <button onClick={() => navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([`<a href="${window.location.href}">It's ${color}'s move<br /><img src="${chessBoardDataUrl}" /><br />Click to view and make a move</a>`], { type: 'text/html'}) })])} type="button">Copy</button>}
+            {chessBoardDataUrl && <button onClick={() => {
+                navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([`<a href="${window.location.href}">It's ${color}'s move<br /><img src="${chessBoardDataUrl}" /><br />Click to view and make a move</a>`], { type: 'text/html'}) })]);
+                setMessage("Copied to clipboard!");
+            }} type="button">Copy</button>}
         </>;
     }
 
