@@ -48,6 +48,52 @@ Here you can link to a specific chess position and make a move to create a new l
 <script type="text/babel">
     const { useState, useEffect, useRef, useCallback } = React;
 
+    function drawChessBoard(position) {
+        // Set up the canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+        
+        const boardSize = 8;
+        const squareSize = canvas.width / boardSize;
+
+        // Draw the chessboard
+        for (let row = 0; row < boardSize; row++) {
+            for (let col = 0; col < boardSize; col++) {
+                const x = col * squareSize;
+                const y = row * squareSize;
+                const isDarkSquare = (row + col) % 2 !== 0;
+                ctx.fillStyle = isDarkSquare ? '#769656' : '#EEEED2'; // Dark and light squares
+                ctx.fillRect(x, y, squareSize, squareSize);
+            }
+        }
+
+        const pieceUnicode = {
+            wK: '♔', wQ: '♕', wR: '♖', wB: '♗', wN: '♘', wP: '♙',
+            bK: '♚', bQ: '♛', bR: '♜', bB: '♝', bN: '♞', bP: '♟'
+        };
+
+        ctx.font = `${squareSize * 0.8}px Arial`; // Scale font size relative to square size
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // Draw the pieces
+        for (const [coord, piece] of Object.entries(position)) {
+            if (piece) {
+                const unicodePiece = pieceUnicode[piece];
+                if (unicodePiece) {
+                    const col = coord.charCodeAt(0) - 'a'.charCodeAt(0); // Convert letter to index (a-h -> 0-7)
+                    const row = 8 - parseInt(coord[1], 10); // Convert number to index (1-8 -> 7-0)
+                    const x = col * squareSize + squareSize / 2;
+                    const y = row * squareSize + squareSize / 2;
+                    ctx.fillStyle = '#000000'; // Black text for all pieces
+                    ctx.fillText(unicodePiece, x, y);
+                }
+            }
+        }
+        return canvas.toDataURL();
+    }
+
     const ascii = pos => {
         const chess = new Chess();
         const fen = Chessboard.objToFen(pos) + " w - - 0 0";
@@ -65,6 +111,7 @@ Here you can link to a specific chess position and make a move to create a new l
             window.chess = chess;
             return chess;
         });
+        const [chessBoardDataUrl, setChessBoardDataUrl] = useState(null);
         const [fen, setFen] = useState(chess.fen());
         const changeFen = (fen) => {
             setFen(fen);
@@ -101,12 +148,14 @@ Here you can link to a specific chess position and make a move to create a new l
         useEffect(() => {
             if (!chessBoard || !fen) return;
             chessBoard.position(fen);
+            setChessBoardDataUrl(drawChessBoard(chessBoard.position()));
         }, [fen, chessBoard])
 
         return <>
             <h3>{chess.turn() === 'b' ? 'Black' : 'White'}'s turn</h3>
             <div ref={boardRef} className={['chessboard']}></div>
-            <pre>{pgn}</pre>
+            <pre>{pgn}</pre >
+            {chessBoardDataUrl && <button onClick={() => navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob(['<a href="' + window.location.href + '"><img src="' + chessBoardDataUrl + '" /><br />Click to view</a>'], { type: 'text/html'}) })])} type="button">Copy</button>}
         </>;
     }
 
