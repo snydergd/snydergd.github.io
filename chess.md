@@ -4,6 +4,7 @@ title: Chess Board Position
 ---
 
 Here you can link to a specific chess position and make a move to create a new link.
+Paste the link into a rich text area (email, chat, etc) and it will display the image and allow you to make a move, otherwise you just get a url to click.
 
 Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [chessboard.js](https://chessboardjs.com/docs.html)
 
@@ -208,7 +209,12 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
                         {moveView === null ? '(Latest Move)' : `Move ${moveView}`}
                     </div>
                     {chessBoardDataUrl && <button onClick={() => {
-                        navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([`<a href="${window.location.href}">It's ${color}'s move<br /><img src="${chessBoardDataUrl}" /><br />Click to view and make a move</a>`], { type: 'text/html'}) })]);
+                        navigator.clipboard.write([
+                            new ClipboardItem({
+                                'text/html': new Blob([`<a href="${window.location.href}">It's ${color}'s move<br /><img src="${chessBoardDataUrl}" /><br />Click to view and make a move</a>`], { type: 'text/html'}),
+                                'text/plain': new Blob([`It's ${color}'s move in chess: ${window.location.href}`], { type: 'text/plain'}),
+                            }),
+                        ]);
                         setMessage("Copied to clipboard!");
                     }} type="button" className="btn btn-primary">Copy Preview Link</button>}
                     {!editText ? <button type="button" className="btn" onClick={() => setEditText(pgn)}>Edit PGN</button> : <>
