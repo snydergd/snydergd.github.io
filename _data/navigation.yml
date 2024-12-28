@@ -2,12 +2,12 @@
   link: /
   types: ['bottom']
 
-- name: Blog
-  link: /blog
-  types: ['bottom', 'top']
 - types: ['top']
   name: Projects
   link: /projects
+- name: Blog
+  link: /blog
+  types: ['bottom']
 
 - name: gFidget
   link: /gfidget

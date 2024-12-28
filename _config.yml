@@ -5,6 +5,7 @@ title: George's Page
 description: A playground on the web
 
 exclude:
+  - vendor
   - "gfidget/source/node_modules"
   - "code-learn/source/node_modules"
   - "flowit/source/node_modules"
