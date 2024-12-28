@@ -114,6 +114,8 @@ Here you can link to a specific chess position and make a move to create a new l
         const [chessBoardDataUrl, setChessBoardDataUrl] = useState(null);
         const [fen, setFen] = useState(chess.fen());
         const [message, setMessage] = useState('');
+        const [editText, setEditText] = useState(null);
+        const [moveView, setMoveView] = useState(null);
         const changeFen = (fen) => {
             setFen(fen);
             onFenChange(fen);
@@ -148,9 +150,16 @@ Here you can link to a specific chess position and make a move to create a new l
 
         useEffect(() => {
             if (!chessBoard || !fen) return;
-            chessBoard.position(fen);
+            const history = chess.history();
+            const myChess = new Chess();
+            myChess.load_pgn(chess.pgn());
+            const move = moveView === null ? history.length : moveView;
+            for (let i = history.length; i > move; i--) {
+                myChess.undo();
+            }
+            chessBoard.position(myChess.fen());
             setChessBoardDataUrl(drawChessBoard(chessBoard.position()));
-        }, [fen, chessBoard])
+        }, [fen, moveView, chessBoard])
         useEffect(() => {
             if (message) {
                 setTimeout(() => setMessage(''), 3000);
@@ -158,15 +167,44 @@ Here you can link to a specific chess position and make a move to create a new l
         }, [message, setMessage])
 
         const color = chess.turn() === 'w' ? 'White' : 'Black';
+        const validatePgn = pgn => {
+            if (new Chess().load_pgn(pgn)) {
+                onPgnChange(pgn);
+                chess.load_pgn(pgn);
+                changeFen(fen);
+                setEditText(null);
+            } else {
+                setMessage("Invalid PGN");
+            }
+        }
         return <>
             <h3>{color}'s turn</h3>
             {message && <div className="alert alert-info">{message}</div>}
-            <div ref={boardRef} className={['chessboard']}></div>
-            <pre>{pgn}</pre >
-            {chessBoardDataUrl && <button onClick={() => {
-                navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([`<a href="${window.location.href}">It's ${color}'s move<br /><img src="${chessBoardDataUrl}" /><br />Click to view and make a move</a>`], { type: 'text/html'}) })]);
-                setMessage("Copied to clipboard!");
-            }} type="button">Copy</button>}
+            <div className="row d-flex">
+                <div ref={boardRef} className={['chessboard']} className="col-6"></div>
+                <div className="col-6">
+                    <div>
+                        <button type="button" onClick={() => setMoveView(Math.max(0,moveView === null ? chess.history().length - 1 : moveView-1))}>{"<"}</button>
+                        <button type="button" onClick={() => {
+                            if (chess.history().length-1 === moveView) {
+                                setMoveView(null);
+                            } else if (moveView !== null) {
+                                setMoveView(moveView+1);
+                            }
+                        }}>{">"}</button>
+                        {moveView === null ? 'Latest Move' : `Move ${moveView}`}
+                    </div>
+                    {chessBoardDataUrl && <button onClick={() => {
+                        navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([`<a href="${window.location.href}">It's ${color}'s move<br /><img src="${chessBoardDataUrl}" /><br />Click to view and make a move</a>`], { type: 'text/html'}) })]);
+                        setMessage("Copied to clipboard!");
+                    }} type="button">Copy Preview Link</button>}
+                    {!editText ? <button type="button" onClick={() => setEditText(pgn)}>Edit PGN</button> : <>
+                        <button type="button" onClick={() => validatePgn(editText)}>Save PGN</button>
+                        <button type="button" onClick={() => setEditText(null)}>Cancel</button>
+                    </>}
+                    {editText ? <textarea value={editText} style={ {display: 'block', height: "35em", width: "100%" } } onChange={e => setEditText(e.target.value)} /> : <pre>{pgn}</pre >}
+                </div>
+            </div>
         </>;
     }
 
