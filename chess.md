@@ -151,11 +151,12 @@ Here you can link to a specific chess position and make a move to create a new l
             setChessBoardDataUrl(drawChessBoard(chessBoard.position()));
         }, [fen, chessBoard])
 
+        const color = chess.turn() === 'w' ? 'White' : 'Black';
         return <>
-            <h3>{chess.turn() === 'b' ? 'Black' : 'White'}'s turn</h3>
+            <h3>{color}'s turn</h3>
             <div ref={boardRef} className={['chessboard']}></div>
             <pre>{pgn}</pre >
-            {chessBoardDataUrl && <button onClick={() => navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob(['<a href="' + window.location.href + '"><img src="' + chessBoardDataUrl + '" /><br />Click to view</a>'], { type: 'text/html'}) })])} type="button">Copy</button>}
+            {chessBoardDataUrl && <button onClick={() => navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([`<a href="${window.location.href}">It's ${color}'s move<br /><img src="${chessBoardDataUrl}" /><br />Click to view and make a move</a>`], { type: 'text/html'}) })])} type="button">Copy</button>}
         </>;
     }
 
