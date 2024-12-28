@@ -211,7 +211,7 @@ Here you can link to a specific chess position and make a move to create a new l
     function App({}) {
         const [pgn, setPgn] = useState('');
 
-        useEffect(() => {
+        const tryParseHash = () => {
             if (!window.location.hash || !window.location.hash.length) return;
             try {
                 const pgn = atob(window.location.hash.substring(1));
@@ -223,12 +223,16 @@ Here you can link to a specific chess position and make a move to create a new l
             } catch (e) {
                 console.error("Unable to decode pgn from URL hash", e);
             }
+        }
+        useEffect(() => {
+            window.addEventListener('popstate', tryParseHash);
+            tryParseHash();
         }, [])
 
         const onPgnChange = pgn => {
             setPgn(pgn);
             if (btoa(pgn) === window.location.hash.substring(1)) return;
-            window.location.hash = btoa(pgn);
+            history.pushState(null, null, `#${btoa(pgn)}`);
         };
 
         return <div>
