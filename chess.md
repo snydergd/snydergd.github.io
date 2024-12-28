@@ -9,11 +9,18 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
 
 <div id="root">Javascript is loading...</div>
 
+<link rel="stylesheet"
+      href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
+      integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU"
+      crossorigin="anonymous">
 <style>
-    .chessboard {
-        width: 30em;
+    .alert {
+        position: absolute;
+        top: 0;
+        z-index: 1000;
     }
 </style>
+
 <script
     src="https://unpkg.com/react@17/umd/react.development.js"
     crossorigin
@@ -25,20 +32,9 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    crossorigin="anonymous"
-/>
-
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js" integrity="sha512-WfASs5HtTgTL/eZsLaOftSN9wMQl7WZGlU5UiKx/yxTViMfGh9whWRwKAC27qH8VtZJqSMqDdbq2uUb1tY3jvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css" integrity="sha512-TU/clvRaSqKB43MX6dvJPEWV8tEGDTbmT4mdxTs6DSYsBY9zKmiw4Qeykp0nS10ndH14HRNG2VWN+IjiMfA17Q==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
 
-<link rel="stylesheet"
-      href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
-      integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU"
-      crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
         crossorigin="anonymous"></script>
@@ -181,28 +177,28 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
         }
         return <>
             <h3>{color}'s turn</h3>
-            {message && <div className="alert alert-info">{message}</div>}
-            <div className="row d-flex">
+            <div className="row d-flex position-relative">
+                {message && <div className="alert alert-info">{message}</div>}
                 <div ref={boardRef} className={['chessboard']} className="col-6"></div>
                 <div className="col-6">
                     <div>
-                        <button type="button" onClick={() => setMoveView(Math.max(0,moveView === null ? chess.history().length - 1 : moveView-1))}>{"<"}</button>
-                        <button type="button" onClick={() => {
+                        <button type="button" className="btn" onClick={() => setMoveView(Math.max(0,moveView === null ? chess.history().length - 1 : moveView-1))}>{"<"}</button>
+                        <button type="button" className="btn" onClick={() => {
                             if (chess.history().length-1 === moveView) {
                                 setMoveView(null);
                             } else if (moveView !== null) {
                                 setMoveView(moveView+1);
                             }
                         }}>{">"}</button>
-                        {moveView === null ? 'Latest Move' : `Move ${moveView}`}
+                        {moveView === null ? '(Latest Move)' : `Move ${moveView}`}
                     </div>
                     {chessBoardDataUrl && <button onClick={() => {
                         navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([`<a href="${window.location.href}">It's ${color}'s move<br /><img src="${chessBoardDataUrl}" /><br />Click to view and make a move</a>`], { type: 'text/html'}) })]);
                         setMessage("Copied to clipboard!");
-                    }} type="button">Copy Preview Link</button>}
-                    {!editText ? <button type="button" onClick={() => setEditText(pgn)}>Edit PGN</button> : <>
-                        <button type="button" onClick={() => validatePgn(editText)}>Save PGN</button>
-                        <button type="button" onClick={() => setEditText(null)}>Cancel</button>
+                    }} type="button" className="btn btn-primary">Copy Preview Link</button>}
+                    {!editText ? <button type="button" className="btn" onClick={() => setEditText(pgn)}>Edit PGN</button> : <>
+                        <button type="button" className="btn" onClick={() => validatePgn(editText)}>Save PGN</button>
+                        <button type="button" className="btn" onClick={() => setEditText(null)}>Cancel</button>
                     </>}
                     {editText ? <textarea value={editText} style={ {display: 'block', height: "35em", width: "100%" } } onChange={e => setEditText(e.target.value)} /> : <pre>{pgn}</pre >}
                 </div>
@@ -244,8 +240,3 @@ Uses [chess.js](https://github.com/jhlywa/chess.js/blob/master/README.md) and [c
     ReactDOM.render(<App />, document.getElementById("root"));
 </script>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"
-></script>
