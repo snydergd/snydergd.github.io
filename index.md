@@ -4,7 +4,10 @@ layout: default
 
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
+    "@context": {
+        "@vocab": "https://schema.org/",
+        "foaf": "http://xmlns.com/foaf/0.1/"
+    },
     "@type": "ProfilePage",
     "dateCreated": "2025-07-05T16:34:00-05:00",
     "dateModified": "2025-07-05T16:34:00-05:00",
@@ -12,6 +15,8 @@ layout: default
         "@type": "Person",
         "name": "George Snyder",
         "alternateName": "snydergd",
+        "foaf:givenName": "George Douglas",
+        "foaf:familyName": "Snyder",
         "description": "Software Engineer, Learner, Mad Scientist",
         "image": "https://snydergd.github.io/images/me2.jpg",
         "sameAs": [
