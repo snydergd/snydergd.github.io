@@ -6,4 +6,5 @@ group :jekyll_plugins do
   gem "github-pages", "~> 231"
   gem "json"
   gem "webrick"
+  gem "csv"
 end
