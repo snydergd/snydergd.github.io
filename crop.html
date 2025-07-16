@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fixed Crop Frame Example</title>
+  <link href="https://unpkg.com/cropperjs@1.6.1/dist/cropper.min.css" rel="stylesheet"/>
+  <style>
+    img {
+      max-width: 100%;
+    }
+    #preview {
+      margin-top: 1rem;
+    }
+    #crop-container {
+      width: 800px;
+      height: 600px;
+      margin-top: 1rem;
+      border: 2px dashed #ccc;
+      position: relative;
+    }
+    canvas {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h2>Upload and Align Image</h2>
+  <input type="file" id="imageInput" accept="image/*" />
+
+  <label>
+    Width:
+    <input type="number" id="cropWidth" value="800" />
+  </label>
+  <label>
+    Height:
+    <input type="number" id="cropHeight" value="800" />
+  </label>
+  <button id="updateCropBox">Update Crop Box</button>
+
+  <div id="crop-container">
+    <img id="image" style="max-width: none; display: block;" />
+  </div>
+
+  <button id="cropButton">Crop</button>
+  <div id="preview"></div>
+
+  <script src="https://unpkg.com/cropperjs@1.6.1/dist/cropper.min.js"></script>
+  <script>
+    const image = document.getElementById('image');
+    const input = document.getElementById('imageInput');
+    const cropButton = document.getElementById('cropButton');
+    const preview = document.getElementById('preview');
+    let cropper;
+
+    const width = 200;
+    const height = 200;
+    input.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        image.src = e.target.result;
+
+        if (cropper) {
+          cropper.destroy();
+        }
+
+        image.onload = () => {
+          cropper = new Cropper(image, {
+            viewMode: 1,
+            autoCrop: true,
+            autoCropArea: 1,
+            dragMode: 'move',
+            responsive: true,
+            background: false,
+            zoomable: true,
+            scalable: false,
+            rotatable: false,
+            cropBoxResizable: false,
+            cropBoxMovable: false,
+            ready() {
+              // Set crop box to fixed size 800x600
+              const containerData = cropper.getContainerData();
+              cropper.setCropBoxData({
+                width: width,
+                height: height,
+                left: (containerData.width - width) / 2,
+                top: (containerData.height - height) / 2,
+              });
+            }
+          });
+        };
+      };
+
+      reader.readAsDataURL(file);
+    });
+    function getCropSize() {
+      const width = parseInt(document.getElementById('cropWidth').value, 10);
+      const height = parseInt(document.getElementById('cropHeight').value, 10);
+      return [width, height];
+    }
+
+    function resize() {
+      const [width,height] = getCropSize();
+
+      const containerData = cropper.getContainerData();
+
+      // Set new crop box dimensions centered in container
+      cropper.setCropBoxData({
+        width,
+        height,
+        left: (containerData.width - width) / 2,
+        top: (containerData.height - height) / 2,
+      });
+    }
+
+    window.addEventListener("load", resize);
+
+    cropButton.addEventListener('click', () => {
+      if (cropper) {
+        const [width, height] = getCropSize();
+        const canvas = cropper.getCroppedCanvas({
+          width: width,
+          height: height,
+        });
+
+        preview.innerHTML = '';
+        preview.appendChild(canvas);
+      }
+    });
+  </script>
+</body>
+</html>
