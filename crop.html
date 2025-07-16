@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Responsive Cropper</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://unpkg.com/cropperjs@1.6.1/dist/cropper.min.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://unpkg.com/cropperjs@1.6.1/dist/cropper.min.css" rel="stylesheet" />
   <style>
     #crop-container {
       width: 100%;
       max-width: 100%;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 1 / 1;
       border: 2px dashed #ccc;
       position: relative;
       overflow: hidden;
@@ -29,7 +29,7 @@
 </head>
 <body class="bg-light">
   <div class="container py-4">
-    <h2 class="mb-4 text-center">Image resize/crop</h2>
+    <h2 class="mb-4 text-center">Image Resize/Crop</h2>
 
     <div class="mb-3">
       <input type="file" id="imageInput" accept="image/*" class="form-control" />
@@ -39,12 +39,10 @@
       <img id="image" />
     </div>
 
-    <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-center my-3">
       <button id="cropButton" class="btn btn-success">Crop</button>
       <button id="downloadButton" class="btn btn-outline-primary">Download Cropped Image</button>
     </div>
-
-    <div id="preview" class="text-center"></div>
 
     <div class="row g-3 align-items-end mb-3">
       <div class="col-6 col-md-3">
@@ -59,6 +57,8 @@
         <button id="updateCropBox" class="btn btn-primary w-100">Update Crop Box</button>
       </div>
     </div>
+
+    <div id="preview" class="text-center"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -71,20 +71,29 @@
     let cropper;
 
     function getCropSize() {
-      const width = parseInt(document.getElementById('cropWidth').value, 10);
-      const height = parseInt(document.getElementById('cropHeight').value, 10);
+      const width = parseInt(document.getElementById('cropWidth').value, 10) || 800;
+      const height = parseInt(document.getElementById('cropHeight').value, 10) || 800;
       return [width, height];
     }
 
     function resize() {
       const [width, height] = getCropSize();
       const containerData = cropper.getContainerData();
+
+      // Ensure the image fills the crop box
+      const imageData = cropper.getImageData();
+      const scaleX = width / imageData.naturalWidth;
+      const scaleY = height / imageData.naturalHeight;
+      const scale = Math.max(scaleX, scaleY);
+      cropper.zoomTo(scale);
+
       cropper.setCropBoxData({
         width,
         height,
         left: (containerData.width - width) / 2,
         top: (containerData.height - height) / 2,
       });
+
     }
 
     input.addEventListener('change', (event) => {
@@ -99,44 +108,18 @@
 
         image.onload = () => {
           const [width, height] = getCropSize();
+
           cropper = new Cropper(image, {
             viewMode: 1,
             autoCrop: true,
-            autoCropArea: 1,
             dragMode: 'move',
             responsive: true,
             background: false,
             zoomable: true,
-            scalable: false,
-            rotatable: false,
             cropBoxResizable: false,
             cropBoxMovable: false,
             ready() {
-              const [width, height] = getCropSize();
-              const containerData = cropper.getContainerData();
-              cropper.setCropBoxData({
-                width,
-                height,
-                left: (containerData.width - width) / 2,
-                top: (containerData.height - height) / 2,
-              });
-
-              const imageData = cropper.getImageData();
-              const scaleX = width / imageData.naturalWidth;
-              const scaleY = height / imageData.naturalHeight;
-              const initialScale = Math.max(scaleX, scaleY);
-
-              cropper.zoomTo(initialScale);
-
-              const newWidth = imageData.naturalWidth * initialScale;
-              const newHeight = imageData.naturalHeight * initialScale;
-
-              cropper.setCanvasData({
-                left: (containerData.width - newWidth) / 2,
-                top: (containerData.height - newHeight) / 2,
-                width: newWidth,
-                height: newHeight
-              });
+              resize();
             }
           });
         };
