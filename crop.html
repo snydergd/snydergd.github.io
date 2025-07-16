@@ -2,48 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fixed Crop Frame Example</title>
+  <title>Responsive Cropper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://unpkg.com/cropperjs@1.6.1/dist/cropper.min.css" rel="stylesheet"/>
   <style>
-    img {
-      max-width: 100%;
-    }
-    #preview {
-      margin-top: 1rem;
-    }
     #crop-container {
-      width: 800px;
-      height: 600px;
-      margin-top: 1rem;
+      width: 100%;
+      max-width: 100%;
+      aspect-ratio: 4 / 3;
       border: 2px dashed #ccc;
       position: relative;
+      overflow: hidden;
+      margin: 1rem auto;
+    }
+    #image {
+      display: block;
+      max-width: none;
     }
     canvas {
       border: 1px solid #ccc;
+      max-width: 100%;
+      height: auto;
     }
   </style>
 </head>
-<body>
-  <h2>Upload and Align Image</h2>
-  <input type="file" id="imageInput" accept="image/*" />
+<body class="bg-light">
+  <div class="container py-4">
+    <h2 class="mb-4 text-center">Image resize/crop</h2>
 
-  <label>
-    Width:
-    <input type="number" id="cropWidth" value="800" />
-  </label>
-  <label>
-    Height:
-    <input type="number" id="cropHeight" value="800" />
-  </label>
-  <button id="updateCropBox">Update Crop Box</button>
+    <div class="mb-3">
+      <input type="file" id="imageInput" accept="image/*" class="form-control" />
+    </div>
 
-  <div id="crop-container">
-    <img id="image" style="max-width: none; display: block;" />
+    <div id="crop-container" class="bg-white">
+      <img id="image" />
+    </div>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
+      <button id="cropButton" class="btn btn-success">Crop</button>
+      <button id="downloadButton" class="btn btn-outline-primary">Download Cropped Image</button>
+    </div>
+
+    <div id="preview" class="text-center"></div>
+
+    <div class="row g-3 align-items-end mb-3">
+      <div class="col-6 col-md-3">
+        <label for="cropWidth" class="form-label">Crop Width</label>
+        <input type="number" id="cropWidth" class="form-control" value="800" />
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="cropHeight" class="form-label">Crop Height</label>
+        <input type="number" id="cropHeight" class="form-control" value="800" />
+      </div>
+      <div class="col-12 col-md-6">
+        <button id="updateCropBox" class="btn btn-primary w-100">Update Crop Box</button>
+      </div>
+    </div>
   </div>
 
-  <button id="cropButton">Crop</button>
-  <div id="preview"></div>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/cropperjs@1.6.1/dist/cropper.min.js"></script>
   <script>
     const image = document.getElementById('image');
@@ -52,8 +70,23 @@
     const preview = document.getElementById('preview');
     let cropper;
 
-    const width = 200;
-    const height = 200;
+    function getCropSize() {
+      const width = parseInt(document.getElementById('cropWidth').value, 10);
+      const height = parseInt(document.getElementById('cropHeight').value, 10);
+      return [width, height];
+    }
+
+    function resize() {
+      const [width, height] = getCropSize();
+      const containerData = cropper.getContainerData();
+      cropper.setCropBoxData({
+        width,
+        height,
+        left: (containerData.width - width) / 2,
+        top: (containerData.height - height) / 2,
+      });
+    }
+
     input.addEventListener('change', (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -62,11 +95,10 @@
       reader.onload = (e) => {
         image.src = e.target.result;
 
-        if (cropper) {
-          cropper.destroy();
-        }
+        if (cropper) cropper.destroy();
 
         image.onload = () => {
+          const [width, height] = getCropSize();
           cropper = new Cropper(image, {
             viewMode: 1,
             autoCrop: true,
@@ -80,54 +112,63 @@
             cropBoxResizable: false,
             cropBoxMovable: false,
             ready() {
-              // Set crop box to fixed size 800x600
+              const [width, height] = getCropSize();
               const containerData = cropper.getContainerData();
               cropper.setCropBoxData({
-                width: width,
-                height: height,
+                width,
+                height,
                 left: (containerData.width - width) / 2,
                 top: (containerData.height - height) / 2,
+              });
+
+              const imageData = cropper.getImageData();
+              const scaleX = width / imageData.naturalWidth;
+              const scaleY = height / imageData.naturalHeight;
+              const initialScale = Math.max(scaleX, scaleY);
+
+              cropper.zoomTo(initialScale);
+
+              const newWidth = imageData.naturalWidth * initialScale;
+              const newHeight = imageData.naturalHeight * initialScale;
+
+              cropper.setCanvasData({
+                left: (containerData.width - newWidth) / 2,
+                top: (containerData.height - newHeight) / 2,
+                width: newWidth,
+                height: newHeight
               });
             }
           });
         };
       };
-
       reader.readAsDataURL(file);
     });
-    function getCropSize() {
-      const width = parseInt(document.getElementById('cropWidth').value, 10);
-      const height = parseInt(document.getElementById('cropHeight').value, 10);
-      return [width, height];
-    }
 
-    function resize() {
-      const [width,height] = getCropSize();
-
-      const containerData = cropper.getContainerData();
-
-      // Set new crop box dimensions centered in container
-      cropper.setCropBoxData({
-        width,
-        height,
-        left: (containerData.width - width) / 2,
-        top: (containerData.height - height) / 2,
-      });
-    }
-
-    window.addEventListener("load", resize);
+    document.getElementById('updateCropBox').addEventListener('click', () => {
+      if (cropper) resize();
+    });
 
     cropButton.addEventListener('click', () => {
       if (cropper) {
         const [width, height] = getCropSize();
-        const canvas = cropper.getCroppedCanvas({
-          width: width,
-          height: height,
-        });
-
+        const canvas = cropper.getCroppedCanvas({ width, height });
         preview.innerHTML = '';
         preview.appendChild(canvas);
       }
+    });
+
+    document.getElementById('downloadButton').addEventListener('click', () => {
+      if (!cropper) return;
+      const [width, height] = getCropSize();
+      const canvas = cropper.getCroppedCanvas({ width, height });
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cropped-image.jpg';
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 'image/jpeg', 0.9);
     });
   </script>
 </body>
