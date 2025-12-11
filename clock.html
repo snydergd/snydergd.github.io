@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Clock</title>
+        <script
+            src="https://unpkg.com/react@17/umd/react.development.js"
+            crossorigin
+        ></script>
+        <script
+            src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+            crossorigin
+        ></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <style>
+            body, html, #root {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root">Javascript is loading...</div>
+        <script type="text/babel">
+            const { useState, useEffect, useRef, useCallback } = React;
+
+            const slicePath = (x, y, angle, r, startAngle) => {
+                let x1 = x;
+                let y1 = y - r;
+                if (startAngle !== undefined) {
+                    x1 = x + r * Math.sin(startAngle * Math.PI / 180);
+                    y1 = y - r * Math.cos(startAngle * Math.PI / 180);
+                } else {
+                    startAngle = 0;
+                }
+                angle = angle % 360;
+                const x2 = x + r * Math.sin((angle+startAngle) * Math.PI / 180);
+                const y2 = y - r * Math.cos((angle+startAngle) * Math.PI / 180);
+                return `M ${x1} ${y1} A ${r} ${r} 0 ${angle > 180 ? 1 : 0} 1 ${x2} ${y2} L ${x} ${y} Z`;
+            };
+            function App({}) {
+                const myRef = useRef(null);
+                const [time, setTime] = useState(new Date());
+                const [width, setWidth] = useState(0);
+                const [height, setHeight] = useState(0);
+                const [startTime, setStartTime] = useState(6.0);
+                const [endTime, setEndTime] = useState(18.5);
+                const [events, setEvents] = useState([]);
+                const [showEventEntry, setShowEventEntry] = useState(false);
+                const defaultEvent = () => ({name: "", time: 0, duration: 0.5});
+                const [pendingEvent, setPendingEvent] = useState(defaultEvent);
+
+                useEffect(() => {
+                    var cancelled = false;
+                    var interval = setInterval(() => {
+                        if (cancelled) {
+                            clearInterval(interval);
+                            return;
+                        }
+                        setTime(new Date());
+                        if (myRef.current) {
+                            setHeight(myRef.current.clientHeight);
+                            setWidth(myRef.current.clientWidth);
+                        }
+                    }, 1000);
+                    if (myRef.current) {
+                        setHeight(myRef.current.clientHeight);
+                        setWidth(myRef.current.clientWidth);
+                    }
+                    return () => {
+                        cancelled = true;
+                    }
+                }, []);
+
+                const hourAngle = ((time.getHours()-startTime)*60*60+time.getMinutes()*60+time.getSeconds())*360/((endTime-startTime)*60*60);
+                const minuteAngle = (time.getMinutes()*60 + time.getSeconds())/10;
+                const r = width && height && (Math.min(width, height) / 2) - 50;
+                const scale = (start, end) => {
+                    const result = [];
+                    for (let i = parseInt(start)+(start%1 > 0 ? 1 : 0); i < end; i++) {
+                        result.push(i);
+                    }
+                    return result;
+                };
+                console.log(scale(startTime, endTime));
+                return <>
+                    <div style={{position: "absolute", top: 10, left: 10, backgroundColor: "white", padding: 5, borderRadius: 5, boxShadow: "0 0 5px rgba(0,0,0,0.3)"}}>
+                        <label>
+                            Start Time:
+                            <input type="number" step="0.5" value={startTime} onChange={e => setStartTime(parseFloat(e.target.value))} />
+                        </label>
+                        <br />
+                        <label>
+                            End Time:
+                            <input type="number" step="0.5" value={endTime} onChange={e => setEndTime(parseFloat(e.target.value))} />
+                        </label>
+                        <button onClick={() => { setShowEventEntry(!showEventEntry) }}>Events</button>
+                        {showEventEntry && <div>
+                            <label>
+                                Name:
+                                <input type="text" value={pendingEvent.name} onChange={e => setPendingEvent({...pendingEvent, name: e.target.value})} />
+                            </label>
+                            <br />
+                            <label>
+                                Time (hours):
+                                <input type="number" step="0.25" value={pendingEvent.time} onChange={e => setPendingEvent({...pendingEvent, time: parseFloat(e.target.value)})} />
+                            </label>
+                            <br />
+                            <label>
+                                Duration (hours):
+                                <input type="number" step="0.25" value={pendingEvent.duration} onChange={e => setPendingEvent({...pendingEvent, duration: parseFloat(e.target.value)})} />
+                            </label>
+                            <br />
+                            <button onClick={() => {
+                                setEvents([...events, pendingEvent]);
+                                setPendingEvent(defaultEvent());
+                            }}>Add Event</button>
+                            <ul>
+                                {events.map((ev, idx) => <li key={idx}>{ev.name} at {ev.time} for {ev.duration}<button onClick={() => setEvents(events.filter((_,i) => i !== idx))}>x</button></li>)}
+                            </ul>
+                        </div>}
+                    </div>
+                    <svg ref={myRef} style={{width: "100%", height: "100%", backgroundColor: "grey"}}>
+                        <path d={slicePath(width/2, height/2, hourAngle, r)} fill="navy" />
+
+                        {events.map((ev, idx) => {
+                            const startAngle = (ev.time - startTime) * 360 / (endTime - startTime);
+                            const endAngle = ev.duration * 360 / (endTime - startTime);
+                            const textAngleRaw = (startAngle + endAngle / 2) * Math.PI/180;
+                            const textRadius = r+35;
+                            const textAnchor = textAngleRaw < Math.PI*2/3 ? "start" : textAngleRaw < Math.PI*4/3 ? "middle" : "end";
+                            return <>
+                                <text 
+                                    x={width/2+Math.sin(textAngleRaw)*textRadius}
+                                    y={height/2-Math.cos(textAngleRaw)*textRadius}
+                                    textAnchor={textAnchor} dominantBaseline="middle" fontSize={r/10} fill="black" stroke="white" strokeWidth="0.5" fontFamily="Arial">
+                                    {ev.name}
+                                </text>
+                                <path key={idx} d={slicePath(width/2, height/2, endAngle, r+10, startAngle)} fill="green" opacity="0.5" />
+                            </>;
+                        })}
+
+                        <path d={slicePath(width/2, height/2, minuteAngle, r-r/3)} fill="orange" />
+                        <path d={slicePath(width/2, height/2, time.getSeconds()*360/60, r-r/3*2)} fill="yellow" />
+                        <text x={width/2} y={height/2} textAnchor="middle" dominantBaseline="middle" fontSize={r/5} fill="black" stroke="white" strokeWidth="0.5" fontFamily="Arial">
+                            {time.toLocaleString().split(", ")[1]}</text>
+                        {scale(startTime, endTime).map(x => {
+                            const angle = (x-startTime)*Math.PI*2/(endTime-startTime);
+                            const radius = r + 25;
+
+                            return <text key={x}
+                            x={width/2+Math.sin(angle)*radius}
+                            y={height/2-Math.cos(angle)*radius}
+                            textAnchor="middle" dominantBaseline="middle" fontSize={r/10} fill="white" fontFamily="Arial">
+                            {x}</text>;
+                        })}
+                    </svg>
+                </>;
+            }
+            ReactDOM.render(<App />, document.getElementById("root"));
+        </script>
+    </body>
+</html>
